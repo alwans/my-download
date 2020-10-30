@@ -5,3 +5,8 @@ cnpm install
 cd lib  
 node webServer.js  
 browser-->http://127.0.0.1:7090
+
+
+
+setting config:  
+vi /lib/config.js
