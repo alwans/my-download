@@ -1,0 +1,38 @@
+
+.upload-container{
+    display:flex;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 500px;
+    height: 300px;
+    background-color: #F8BA0B;
+    border-radius: 40px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 4px 4px 14px rgb(234 226 27 / 66%), 11px 12px 21px rgba(0, 0, 0, .1);
+}
+.icon{
+    width: 115px;
+    height: 100px;
+    display: block;
+    margin: 100px 0px;
+    margin: auto;
+    color: #ffffff9c;
+}
+svg{
+    width: 100%;
+    height: auto;
+}
+/* svg:hover{
+    transform:scaleX(1.5);
+} */
+.upload-container:hover{
+    box-shadow: inset 6px 6px 10px rgb(76 67 67 / 57%), inset 10px 6px 20px rgba(0, 0, 0, 0.05);
+}
+.upload-container input[type='file']{
+    display: none;
+}
