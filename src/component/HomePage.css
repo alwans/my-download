@@ -43,23 +43,26 @@
 }
 .qrcode-container{
     position: absolute;
-    width: 280px;
-    height: 320px;
+    width: 275px;
+    /* height: 320px; */
+    overflow: hidden;
     background: white;
     bottom: 0;
 }
 .qrcode{
-    position: absolute!important;
+    /* position: absolute!important; */
     left: 12px!important;
     top: 12px!important;
+    padding: 10px !important;
 }
 .qrcode-tittle{
-    position: absolute;
+    /* position: absolute; */
+    display: inline-block;
     bottom: 0px;
     text-align: center;
     color: #ff00008c;
     width: 280px;
-    padding: 5px;
+    padding: 2px;
 }
 .tree-tittle{
     color: white;

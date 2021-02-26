@@ -24,8 +24,7 @@
     color: #ffffff9c;
 }
 svg{
-    width: 100%;
-    height: auto;
+    margin: auto;
 }
 /* svg:hover{
     transform:scaleX(1.5);

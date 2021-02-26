@@ -78,10 +78,20 @@ input:focus{
 .search-qrcode{
     /* position: absolute; */
     width: 280px;
-    height: 280px;
+    height: 320px;
     background: white;
     bottom: 0;
     margin-left: 200px;
+}
+.qrcode-info{
+    text-align: center;
+    color: red;
+    padding: 13px;
+    font-family: emoji;
+    font-weight: 600;
+}
+.qrcode-info span{
+    display: block;
 }
 .filter_qrcode{
     position: relative!important;
@@ -134,6 +144,10 @@ li a:before{
     height: auto;
     display: inline-block;
     padding-right: 3px;
+}
+.download_icon{
+    margin-left: 10px;
+    width: 15px;
 }
 
 

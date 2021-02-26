@@ -4,6 +4,8 @@ import Upload from './Upload.jsx';
 import QRCode from 'qrcode.react';
 import AppListPage from './AppListPage.jsx';
 import {Treebeard} from 'react-treebeard';
+import axios from 'axios';
+
 // import ScrollAnimation from 'react-animate-on-scroll';
 // const baseUrl = location.host;
 // const baseUrl = '192.168.131.184:7090';
@@ -12,7 +14,6 @@ const MENU_LIST ={
     UPLOAD_MEUN:'UPLOAD_MEUN',
     FILE_TREE:'FILE_TREE'
 }
-
 function defer() {
     const d = {};
     d.promise = new Promise((resolve, reject) => {
@@ -46,14 +47,28 @@ class HomePage extends React.Component{
         super(props);
         this.onUpload = this.onUpload.bind(this);
         this.state ={
+            uploadPercent:0,
             qrCodeUrl:'',
             qrCode:'',
+            qrCodeCreateTime:'',
             active_Memu:'FILE_TREE',
             data:{},
             labels:[]
         };
         this.initData();
         this.onChangeMenu = this.onChangeMenu.bind(this);
+        this.configs = {
+            headers: { 'Content-Type': 'multipart/form-data' ,'Access-Control-Allow-Origin':'*'},
+            onUploadProgress: (progress) => {
+            //   console.log(progress);
+              let { loaded,total } = progress;
+              let percent = parseInt((loaded / total * 100));
+            //   console.log('precent: ',percent);
+              this.setState({
+                uploadPercent:percent
+              })
+            }
+        }
     }
     initData(){
         fetch('/initData')
@@ -62,6 +77,7 @@ class HomePage extends React.Component{
             if(data.fileName){
                 this.setState({
                     qrCode:data.fileName,
+                    qrCodeCreateTime:data.createTime,
                     data:data.data,
                     labels:data.labels,
                     qrCodeUrl:data.qrCodeUrl
@@ -79,32 +95,44 @@ class HomePage extends React.Component{
     onChangeMenu(){
         this.state.active_Memu==MENU_LIST.FILE_TREE? this.setState({active_Memu:MENU_LIST.UPLOAD_MEUN}) : this.setState({active_Memu:MENU_LIST.FILE_TREE});
     }
+
     onUpload(files){
         console.log(files);
         const file = files[0];
-        const url = file.name.includes('apk')? '/upload/apk': '/upload/ipa';
+        console.log('file: ',file);
+        const url = file.name.includes('ipa')? '/upload/ipa': '/upload/file';
         console.log('url: ',url);
         const formdata = new FormData();
         formdata.append('file',file);
         // let s = postJSON(url+'/upload',formdata);
-        let res = fetch(url,{
-            method:'POST',
-            body:formdata,
-            headers:{'Access-Control-Allow-Origin':'*'}
+        // let res = fetch(url,{ //fetch
+        //     method:'POST',
+        //     body:formdata,
+        //     headers:{'Access-Control-Allow-Origin':'*'}
+        // })
+        // .then(resp => resp.json())
+        // .then(data => {
+        //     if(data.fileName){
+        //         if(data.fileName){
+        //             this.setState({
+        //                 qrCode:data.fileName,
+        //                 qrCodeUrl:data.qrCodeUrl,
+        //                 qrCodeCreateTime:data.createTime
+        //             });
+        //         }
+        //     }
+        // })
+        // .catch(error => console.log(error));
+        // console.log('res: ',res);
+        axios.post(url, formdata, this.configs).then(res => {
+            console.log('res :',res);
+            this.setState({
+                qrCode:res.data.fileName,
+                qrCodeUrl:res.data.qrCodeUrl,
+                qrCodeCreateTime:res.data.createTime,
+                uploadPercent:0
+            });
         })
-        .then(resp => resp.json())
-        .then(data => {
-            if(data.fileName){
-                if(data.fileName){
-                    this.setState({
-                        qrCode:data.fileName,
-                        qrCodeUrl:data.qrCodeUrl
-                    });
-                }
-            }
-        })
-        .catch(error => console.log(error));
-        console.log('res: ',res);
     }
 
     render(){
@@ -122,16 +150,19 @@ class HomePage extends React.Component{
                     <AppListPage data={data} labels={labels}/>
                 }
                 {this.state.active_Memu==MENU_LIST.UPLOAD_MEUN &&
-                    <Upload  onUpload={this.onUpload}/>
+                    <Upload  onUpload={this.onUpload} percent={this.state.uploadPercent}/>
                 }
                 <div className="logo" >wang</div>
                 {/* <div className='homepage'>
                     coming soon
                 </div> */}
                 {
-                    this.state.active_Memu==MENU_LIST.UPLOAD_MEUN && this.state.qrCode && <div className='qrcode-container'>
+                    this.state.active_Memu==MENU_LIST.UPLOAD_MEUN && this.state.qrCode && 
+                    <div className='qrcode-container'>
                         <QRCode size={256} value={this.state.qrCodeUrl} bgColor={"#FFFFFF"} className='qrcode' />
-                        <span className='qrcode-tittle'>{this.state.qrCode}</span></div>
+                        <span className='qrcode-tittle'>{this.state.qrCode}</span>
+                        <span className='qrcode-tittle'>{this.state.qrCodeCreateTime}</span>
+                    </div>
                 }
             </div>
         )

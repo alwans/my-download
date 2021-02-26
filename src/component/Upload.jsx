@@ -1,6 +1,9 @@
 import React,{useCallback} from 'react';
 import './Upload.css';
 import InlineSVG from 'svg-inline-react';
+import { Progress } from 'antd';
+// import 'antd/dist/antd.css';
+import Circle from 'react-circle';
 
 class Upload extends React.Component{
     constructor(props){
@@ -41,6 +44,7 @@ class Upload extends React.Component{
 
     render(){
         console.log('---------');
+        let percent = this.props.percent;
         return (
             <div className='upload-container' onClick={e =>this.input.click()}
                 onDragEnter={this.handleDragEnter}
@@ -48,14 +52,23 @@ class Upload extends React.Component{
                 onDragOver={this.handleDragEnter}
                 onDrop={(event) => this.handleDrop(event)}
             >
-                <input multiple type='file' onChange={this.upload} ref = {(input) => {this.input = input}}/>
+                {percent==0 && <>
+                    <input multiple type='file' onChange={this.upload} ref = {(input) => {this.input = input}}/>
                 <span className='icon'>
                     <InlineSVG src={require("svg-inline-loader!assets/upload.svg")} />点击上传或拖拽到这里上传
-                </span>
-  
+                </span></>
+                }
+                {/* {percent!=0 && <Progress style={{ margin:'auto'}} type="circle" percent={percent} />} */}
+                {percent!=0 &&
+                    <Circle
+                        size="200"
+                        lineWidth="10"
+                        progress={percent}
+                    />
+                }
+
             </div>
         );
     };
 }
-
 export default Upload
